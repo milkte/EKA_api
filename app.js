@@ -10,6 +10,8 @@ var users = require('./routes/users');
 
 var app = express();
 
+app.set('port', (process.env.PORT || 5000));
+
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'jade');
@@ -41,6 +43,10 @@ app.use(function(err, req, res, next) {
   // render the error page
   res.status(err.status || 500);
   res.render('error');
+});
+
+app.listen(app.get('port'), function(){
+  console.log('Node app is running on port', app.get('port'));
 });
 
 module.exports = app;
