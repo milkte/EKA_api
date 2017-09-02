@@ -2,29 +2,40 @@ var express = require('express');
 var router = express.Router();
 var Users = require('../models/user');
 /* GET users listing. */
-
+var crypto = require('crypto');
 module.exports = function (app) {
 
     app.post('/createNewUser', function (req, res, next) {
-        Users.forge({
-            user_name: req.body.data.userName,
-            user_password: req.body.data.password,
-            user_email: req.body.data.email,
-            first_name: "",
-            last_name: "",
-            tel: "",
-            street_line1:"",
-            street_line2: "",
-            city:"",
-            state: "",
-            zip: ""
-        }).save()
-            .then(function (user) {
-                res.json({error: false, data: {id: user.get('id')}});
 
-            }).catch(function (err) {
-            res.status(500).json({error: true, data: {message: err.message}});
+        var encryptPromise = new Promise(function(resolve, reject){
+            const secret = req.body.data.password;
+            const hash = crypto.createHmac('sha256', secret)
+                .update('EKA testing')
+                .digest('hex');
+            resolve(hash);
         });
+
+        encryptPromise.then(function (hash) {
+            Users.forge({
+                user_name: req.body.data.userName,
+                user_password: hash,
+                user_email: req.body.data.email,
+                first_name: "",
+                last_name: "",
+                tel: "",
+                street_line1: "",
+                street_line2: "",
+                city: "",
+                state: "",
+                zip: ""
+            }).save()
+                .then(function (user) {
+                    res.json({error: false, data: {id: user.get('id')}});
+
+                }).catch(function (err) {
+                res.status(500).json({error: true, data: {message: err.message}});
+            });
+        })
     });
 
     app.get('/users/:id', function (req, res) {
@@ -43,7 +54,7 @@ module.exports = function (app) {
             });
     });
 
-    app.put('/editForm2/:id', function (req, res, next){
+    app.put('/updateProfile/:id', function (req, res, next){
         Users.forge({id: req.params.id})
             .fetch({require: true})
             .then(function (user) {
@@ -61,7 +72,7 @@ module.exports = function (app) {
                     zip: req.body.data.zip || user.get('zip')
                 })
                     .then(function () {
-                        res.json({error: false, data: {message: 'User details updated'}});
+                        res.json({error: false, data: {message: 'User details updated', id: user.get('id')}});
                     })
                     .catch(function (err) {
                         res.status(500).json({error: true, data: {message: err.message}});
@@ -71,5 +82,4 @@ module.exports = function (app) {
                 res.status(500).json({error: true, data: {message: err.message}});
             });
     });
-
 };
