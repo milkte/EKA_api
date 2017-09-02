@@ -28,3 +28,4 @@ exports.down = function(knex, Promise) {
     const dropProfile = knex.schema.dropTable('profile');
     return Promise.all([dropProfile, dropUser]);
 };
+

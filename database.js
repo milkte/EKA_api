@@ -15,26 +15,6 @@ var knex = require('knex')({
     }
 });
 
-knex.schema.createTableIfNotExists('users', function (table) {
-    table.increments('id');
-    table.string('user_name');
-    table.string('user_password');
-    table.string('user_email');
-    table.timestamps();
-})
-    .createTableIfNotExists('profile', function(table){
-        table.string('first_name');
-        table.string('last_name');
-        table.string('tel');
-        table.string('street_line1');
-        table.string('street_line2');
-        table.string('city');
-        table.string('state');
-        table.string('zip');
-        table.integer('user_id').unique().references('users.id');
-    });
-
-
 var bookshelf = require('bookshelf')(knex);
 
 bookshelf.plugin('registry'); // Resolve circular dependencies with relations

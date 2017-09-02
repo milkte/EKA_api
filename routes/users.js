@@ -2,11 +2,11 @@ var express = require('express');
 var router = express.Router();
 var Users = require('../models/user');
 /* GET users listing. */
-router.post('/users', function (req, res, next) {
+router.post('/createNewUser', function (req, res, next) {
     Users.forge({
-        name: req.body.userName,
-        password: req.body.password,
-        email: req.body.email,
+        user_name: req.body.data.userName,
+        user_password: req.body.data.password,
+        user_email: req.body.data.email,
 
     }).save()
         .then(function (user) {
