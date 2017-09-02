@@ -5,9 +5,6 @@ exports.up = function(knex, Promise) {
         table.string('user_name');
         table.string('user_password');
         table.string('user_email');
-        table.timestamps();
-    });
-    const createProfile = knex.schema.createTableIfNotExists('profile', function (table) {
         table.string('first_name');
         table.string('last_name');
         table.string('tel');
@@ -16,16 +13,14 @@ exports.up = function(knex, Promise) {
         table.string('city');
         table.string('state');
         table.string('zip');
-        table.integer('user_id').unique().references('users.id');
         table.timestamps();
     });
 
-    return Promise.all([createUser, createProfile])
+    return Promise.all([createUser])
 };
 
 exports.down = function(knex, Promise) {
     const dropUser = knex.schema.dropTable('users');
-    const dropProfile = knex.schema.dropTable('profile');
-    return Promise.all([dropProfile, dropUser]);
+    return Promise.all([dropUser]);
 };
 

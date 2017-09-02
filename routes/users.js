@@ -37,7 +37,11 @@ module.exports = function (app) {
     });
 
     app.post('/editForm2/:id', function (req, res, next){
-        Users.forge({
+        Users.forge(
+            {id: req.params.id,
+
+
+
 
         })
     })
