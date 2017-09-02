@@ -8,7 +8,9 @@ var pg = require('pg');
 var index = require('./routes/index');
 var users = require('./routes/users');
 var bookshelf = require('./database');
+var cors = require('cors');
 var app = express();
+
 
 app.set('port', (process.env.PORT || 5000));
 
@@ -25,6 +27,15 @@ app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
 app.use('/', index);
+
+const corsOptions = {
+    origin: 'http://192.168.1.164:3000',
+};
+
+app.use(cors(corsOptions));
+
+require('./routes/users')(app);
+
 app.use('/users', users);
 
 // app.get('/db', function (request, response) {

@@ -2,22 +2,25 @@ var express = require('express');
 var router = express.Router();
 var Users = require('../models/user');
 /* GET users listing. */
-router.post('/createNewUser', function (req, res, next) {
-    Users.forge({
-        user_name: req.body.data.userName,
-        user_password: req.body.data.password,
-        user_email: req.body.data.email,
 
-    }).save()
-        .then(function (user) {
-            res.json({error: false, data: {id: user.get('id')}})
-                .catch(function (err) {
-                    res.status(500).json({error: true, data: {message: err.message}});
-                });
-        })
-});
+module.exports = function (app) {
 
-router.get('/users/:id', function (req, res) {
+    app.post('/createNewUser', function (req, res, next) {
+        Users.forge({
+            user_name: req.body.data.userName,
+            user_password: req.body.data.password,
+            user_email: req.body.data.email,
+
+        }).save()
+            .then(function (user) {
+                res.json({error: false, data: {id: user.get('id')}});
+
+            }).catch(function (err) {
+            res.status(500).json({error: true, data: {message: err.message}});
+        });
+    });
+
+    app.get('/users/:id', function (req, res) {
         Users.forge({id: req.params.id})
             .fetch()
             .then(function (user) {
@@ -33,4 +36,9 @@ router.get('/users/:id', function (req, res) {
             });
     });
 
-module.exports = router;
+    app.post('/editForm2/:id', function (req, res, next){
+        Users.forge({
+
+        })
+    })
+};
